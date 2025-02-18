@@ -1,0 +1,85 @@
+//* Container principal */
+/* Container principal */
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Posiciona os itens mais abaixo */
+    min-height: 100vh;
+    background-color: #f4f9fc;
+    padding: 40px;
+    padding-top: 100px; /* Move o menu mais para baixo */
+}
+
+/* Título do menu */
+.menu-title {
+    font-size: 2.5rem;
+    margin-bottom: 60px; /* Aumenta o espaço entre o título e o menu */
+    color: #34495e;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Container de itens do menu */
+.menu-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px; /* Maior espaçamento entre os itens */
+}
+
+/* Itens do menu */
+.menu-item {
+    text-decoration: none;
+    color: #34495e;
+    text-align: center;
+    width: 200px; /* Aumenta o tamanho do bloco */
+    height: 200px; /* Aumenta o tamanho do bloco */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between; /* Ajusta o espaçamento interno */
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px; /* Espaçamento interno maior */
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.menu-item:hover {
+    transform: translateY(-5px);
+    background-color: #dff9fb;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Ícones dos itens */
+.menu-icon {
+    font-size: 4.5rem; /* Ícones maiores */
+    margin-bottom: 20px; /* Espaço entre o ícone e o texto */
+    margin-top: auto; /* Empurra o ícone para baixo */
+    color: #1abc9c;
+}
+
+/* Texto dos itens */
+.menu-item span {
+    font-size: 1.3rem; /* Texto maior */
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Responsividade para dispositivos menores */
+@media (max-width: 768px) {
+    .menu-grid {
+        flex-direction: column;
+    }
+
+    .menu-item {
+        width: 100%;
+        height: auto;
+        padding: 20px;
+    }
+
+    .menu-title {
+        font-size: 2rem;
+    }
+}

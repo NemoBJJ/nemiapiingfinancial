@@ -1,0 +1,67 @@
+.database {
+    text-align: center;
+    padding: 20px;
+}
+
+.database table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.database th,
+.database td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.database th {
+    background-color: #f4f4f4;
+}
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.pagination button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #4caf50;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: #45a049;
+}
+
+/* Estilo para o botão de voltar ao menu */
+.back-to-menu {
+    margin-top: 20px;
+}
+
+.back-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #ff5c5c;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #e60000;
+}
