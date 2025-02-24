@@ -81,7 +81,7 @@ const Charts = () => {
 
     return (
         <div style={{ width: '80%', margin: '0 auto', height: '500px' }}>
-            <h2>Receitas e Despesas - 2024</h2>
+            <h2> Income and Expenses - 2024</h2>
             {chartData ? (
                 <Bar
                     data={chartData}

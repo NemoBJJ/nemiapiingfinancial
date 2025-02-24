@@ -33,7 +33,7 @@ const Database = () => {
 
     return (
         <div className="database">
-            <h2>Banco de Dados - Transações</h2>
+            <h2> Database Pageable </h2>
             <table>
                 <thead>
                     <tr>
@@ -62,19 +62,19 @@ const Database = () => {
             </table>
             <div className="pagination">
                 <button onClick={handlePreviousPage} disabled={page === 0}>
-                    Página Anterior
+                    back
                 </button>
                 <span>
                     Página {page + 1} de {totalPages}
                 </span>
                 <button onClick={handleNextPage} disabled={page === totalPages - 1}>
-                    Próxima Página
+                    next
                 </button>
             </div>
             {/* Botão para voltar ao menu */}
             <div className="back-to-menu">
                 <Link to="/">
-                    <button className="back-button">Voltar ao Menu</button>
+                    <button className="back-button">Back Menu</button>
                 </Link>
             </div>
         </div>
