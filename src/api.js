@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// Configuração para utilizar o IP elástico com HTTP
+// Configuração CORRETA com /api/api pela lógica do container
 const api = axios.create({
-  baseURL: 'https://financial-container.neemindev.com/api',
+  baseURL: 'https://financial-container.neemindev.com/api/api',
 });
 
 export default api;
