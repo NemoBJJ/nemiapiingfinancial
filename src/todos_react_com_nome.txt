@@ -1,0 +1,726 @@
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\components\Charts.js =====
+import React, { useEffect, useState } from 'react';
+import {
+    Chart as ChartJS,
+    BarElement,
+    CategoryScale,
+    LinearScale,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+
+ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+
+const Charts = () => {
+    const [chartData, setChartData] = useState(null);
+
+    useEffect(() => {
+        const mockData = [
+            { month: '2024-01', type: 'RECEITA', total: 46253.66 },
+            { month: '2024-01', type: 'DESPESA', total: 40098.33 },
+            { month: '2024-02', type: 'RECEITA', total: 41271.2 },
+            { month: '2024-02', type: 'DESPESA', total: 39153.05 },
+            { month: '2024-03', type: 'RECEITA', total: 56421.33 },
+            { month: '2024-03', type: 'DESPESA', total: 49657 },
+            { month: '2024-04', type: 'RECEITA', total: 63993.89 },
+            { month: '2024-04', type: 'DESPESA', total: 38183.55 },
+            { month: '2024-05', type: 'RECEITA', total: 63682.74 },
+            { month: '2024-05', type: 'DESPESA', total: 59412.71 },
+            { month: '2024-06', type: 'RECEITA', total: 63087.86 },
+            { month: '2024-06', type: 'DESPESA', total: 43966.68 },
+            { month: '2024-07', type: 'RECEITA', total: 35646.52 },
+            { month: '2024-07', type: 'DESPESA', total: 58460.26 },
+            { month: '2024-08', type: 'RECEITA', total: 49864.72 },
+            { month: '2024-08', type: 'DESPESA', total: 52514.67 },
+            { month: '2024-09', type: 'RECEITA', total: 47372.66 },
+            { month: '2024-09', type: 'DESPESA', total: 39586.16 },
+            { month: '2024-10', type: 'RECEITA', total: 47766.66 },
+            { month: '2024-10', type: 'DESPESA', total: 66905.28 },
+            { month: '2024-11', type: 'RECEITA', total: 50941.87 },
+            { month: '2024-11', type: 'DESPESA', total: 58949.38 },
+            { month: '2024-12', type: 'RECEITA', total: 69260.05 },
+            { month: '2024-12', type: 'DESPESA', total: 67735.18 },
+        ];
+
+        // Captura todos os meses presentes nos dados
+        const months = [...new Set(mockData.map((d) => d.month))];
+
+        // Calcula receitas e despesas por mês
+        const revenues = months.map((month) =>
+            mockData
+                .filter((d) => d.month === month && d.type === 'RECEITA')
+                .reduce((acc, curr) => acc + curr.total, 0)
+        );
+        const expenses = months.map((month) =>
+            mockData
+                .filter((d) => d.month === month && d.type === 'DESPESA')
+                .reduce((acc, curr) => acc + curr.total, 0)
+        );
+
+        // Atualiza o estado do gráfico
+        setChartData({
+            labels: months,
+            datasets: [
+                {
+                    label: 'Receitas',
+                    data: revenues,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                },
+                {
+                    label: 'Despesas',
+                    data: expenses,
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                },
+            ],
+        });
+    }, []);
+
+    return (
+        <div style={{ width: '80%', margin: '0 auto', height: '500px' }}>
+            <h2> Income and Expenses - 2024</h2>
+            {chartData ? (
+                <Bar
+                    data={chartData}
+                    options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Meses',
+                                },
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Valores (R$)',
+                                },
+                            },
+                        },
+                    }}
+                />
+            ) : (
+                <p>Carregando dados ou nenhum dado disponível.</p>
+            )}
+        </div>
+    );
+};
+
+export default Charts;
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\components\CRUDTransactions.js =====
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../api';
+import './CRUDTransactions.css';
+
+const CRUDTransactions = () => {
+    const [transactions, setTransactions] = useState([]);
+    const [selectedTransactionId, setSelectedTransactionId] = useState('');
+    const [newTransaction, setNewTransaction] = useState({
+        description: '',
+        amount: '',
+        date: '',
+        type: '',
+        transactionCategory: '',
+    });
+
+    useEffect(() => {
+        const fetchTransactions = async () => {
+            try {
+                const response = await api.get('/transactions');
+                setTransactions(response.data);
+            } catch (error) {
+                console.error('Error fetching transactions:', error);
+            }
+        };
+        fetchTransactions();
+    }, []);
+
+    const handleAddTransaction = async () => {
+        try {
+            const response = await api.post('/transactions', newTransaction);
+            setTransactions([...transactions, response.data]);
+            resetForm();
+        } catch (error) {
+            console.error('Error adding transaction:', error);
+        }
+    };
+
+    const handleUpdateTransaction = async () => {
+        if (!selectedTransactionId) {
+            alert('Please provide a valid ID to update.');
+            return;
+        }
+
+        try {
+            const response = await api.put(`/transactions/${selectedTransactionId}`, newTransaction);
+            setTransactions(
+                transactions.map((t) =>
+                    t.id === parseInt(selectedTransactionId) ? response.data : t
+                )
+            );
+            resetForm();
+            setSelectedTransactionId('');
+        } catch (error) {
+            console.error('Error updating transaction:', error);
+        }
+    };
+
+    const handleDeleteTransaction = async (id) => {
+        try {
+            await api.delete(`/transactions/${id}`);
+            setTransactions(transactions.filter((t) => t.id !== id));
+        } catch (error) {
+            console.error('Error deleting transaction:', error);
+        }
+    };
+
+    const handleFetchTransactionById = async () => {
+        if (!selectedTransactionId) {
+            alert('Please provide a valid ID to search.');
+            return;
+        }
+
+        try {
+            const response = await api.get(`/transactions/${selectedTransactionId}`);
+            setNewTransaction({
+                description: response.data.description,
+                amount: response.data.amount,
+                date: response.data.date,
+                type: response.data.type,
+                transactionCategory: response.data.transactionCategory,
+            });
+        } catch (error) {
+            console.error('Error fetching transaction:', error);
+        }
+    };
+
+    const resetForm = () => {
+        setNewTransaction({
+            description: '',
+            amount: '',
+            date: '',
+            type: '',
+            transactionCategory: '',
+        });
+    };
+
+    return (
+        <div className="crud-container">
+            <h1 className="crud-title">Manage Transactions</h1> {/* Title updated */}
+
+            <div className="crud-section">
+                <h3>Add or Update Transaction</h3> {/* Updated to English */}
+                <input
+                    type="text"
+                    placeholder="Description"
+                    value={newTransaction.description}
+                    onChange={(e) => setNewTransaction({ ...newTransaction, description: e.target.value })}
+                />
+                <input
+                    type="number"
+                    placeholder="Amount"
+                    value={newTransaction.amount}
+                    onChange={(e) => setNewTransaction({ ...newTransaction, amount: e.target.value })}
+                />
+                <input
+                    type="date"
+                    value={newTransaction.date}
+                    onChange={(e) => setNewTransaction({ ...newTransaction, date: e.target.value })}
+                />
+                <select
+                    value={newTransaction.type}
+                    onChange={(e) => setNewTransaction({ ...newTransaction, type: e.target.value })}
+                >
+                    <option value="">Select Type</option> {/* Updated */}
+                    <option value="RECEITA">Revenue</option> {/* Updated */}
+                    <option value="DESPESA">Expense</option> {/* Updated */}
+                </select>
+                <input
+                    type="text"
+                    placeholder="Category"
+                    value={newTransaction.transactionCategory}
+                    onChange={(e) =>
+                        setNewTransaction({ ...newTransaction, transactionCategory: e.target.value })
+                    }
+                />
+                <button onClick={handleAddTransaction}>Add</button> {/* Updated */}
+                <button onClick={handleUpdateTransaction}>Update</button> {/* Updated */}
+            </div>
+
+            <div className="crud-section">
+                <h3>Search Transaction by ID</h3> {/* Updated */}
+                <input
+                    type="text"
+                    placeholder="Enter ID"
+                    value={selectedTransactionId}
+                    onChange={(e) => setSelectedTransactionId(e.target.value)}
+                />
+                <button onClick={handleFetchTransactionById}>Search</button> {/* Updated */}
+            </div>
+
+            <div className="transactions-list crud-section">
+                <h3>Transaction List</h3> {/* Updated */}
+                <ul>
+                    {transactions.map((t) => (
+                        <li key={t.id}>
+                            ID: {t.id} - {t.description} - $
+                            {t.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })} {/* Updated */}
+                            <button onClick={() => handleDeleteTransaction(t.id)}>Delete</button> {/* Updated */}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <div className="back-to-menu">
+                <Link to="/">
+                    <button className="back-button">Back to Menu</button> {/* Updated */}
+                </Link>
+            </div>
+        </div>
+    );
+};
+
+export default CRUDTransactions;
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\components\Dashboard.js =====
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../api';
+import Charts from './Charts';
+
+const Dashboard = () => {
+    useEffect(() => {
+        api.get('/dashboard')
+            .catch((error) => {
+                console.error('Erro ao buscar dados do dashboard:', error);
+            });
+    }, []);
+
+    return (
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+            <div style={{ marginBottom: '20px' }}>
+                <Link to="/">
+                    <button style={{ padding: '10px 20px', fontSize: '16px' }}>
+                        ← Voltar ao Menu
+                    </button>
+                </Link>
+            </div>
+            <h1>Dashboard Financeiro</h1>
+            <Charts />
+        </div>
+    );
+};
+
+export default Dashboard;
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\components\Database.js =====
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../api';
+import './Database.css';
+
+const Database = () => {
+    const [transactions, setTransactions] = useState([]);
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
+    useEffect(() => {
+        fetchTransactions(page);
+    }, [page]);
+
+    const fetchTransactions = async (currentPage) => {
+        try {
+            const response = await api.get(`/transactions/paged?page=${currentPage}&size=10`);
+            setTransactions(response.data.content);
+            setPage(response.data.number);
+            setTotalPages(response.data.totalPages);
+        } catch (error) {
+            console.error('Erro ao buscar transações:', error);
+        }
+    };
+
+    const handlePreviousPage = () => {
+        if (page > 0) setPage(page - 1);
+    };
+
+    const handleNextPage = () => {
+        if (page < totalPages - 1) setPage(page + 1);
+    };
+
+    return (
+        <div className="database">
+            <h2>Banco de Dados - Transações</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Data</th>
+                        <th>Tipo</th>
+                        <th>Categoria</th>
+                        <th>Mês</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {transactions.map((transaction) => (
+                        <tr key={transaction.id}>
+                            <td>{transaction.id}</td>
+                            <td>{transaction.description}</td>
+                            <td>R$ {transaction.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                            <td>{transaction.date}</td>
+                            <td>{transaction.type}</td>
+                            <td>{transaction.transaction_category}</td>
+                            <td>{transaction.transaction_month}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <div className="pagination">
+                <button onClick={handlePreviousPage} disabled={page === 0}>
+                    Anterior
+                </button>
+                <span>
+                    Página {page + 1} de {totalPages}
+                </span>
+                <button onClick={handleNextPage} disabled={page === totalPages - 1}>
+                    Próxima
+                </button>
+            </div>
+            <div className="back-to-menu">
+                <Link to="/">
+                    <button className="back-button">← Voltar ao Menu</button>
+                </Link>
+            </div>
+        </div>
+    );
+};
+
+export default Database;
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\components\Footer.js =====
+import React from 'react';
+
+const Footer = () => {
+    return (
+        <footer style={{ backgroundColor: '#222', color: '#fff', textAlign: 'center', padding: '1rem' }}>
+            <p>&copy; 2024 Sistema Financeiro. Todos os direitos reservados.</p>
+        </footer>
+    );
+};
+
+export default Footer;
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\components\Header.js =====
+import React from 'react';
+
+const Header = () => {
+    return (
+        <header style={{ backgroundColor: '#333', color: '#fff', padding: '10px', textAlign: 'center' }}>
+            <h1>Financeiro Frontend</h1>
+        </header>
+    );
+};
+
+export default Header;
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\components\Menu.js =====
+import React from 'react';
+import { Link } from 'react-router-dom';
+import './Menu.css';
+
+const Menu = () => {
+  return (
+    <div className="dashboard-container">
+      <h1 className="dashboard-title">💰 Financeiro </h1>
+      <div className="cards-grid">
+        <Link to="/transactions" className="card">
+          <div className="card-icon">💰</div>
+          <h2>Transactions</h2>
+          <p>Gerencie suas transações financeiras</p>
+        </Link>
+        
+        <Link to="/statistics" className="card">
+          <div className="card-icon">📊</div>
+          <h2>Statistics</h2>
+          <p>Veja estatísticas e análises</p>
+        </Link>
+        
+        <Link to="/dashboard" className="card">
+          <div className="card-icon">📈</div>
+          <h2>Dashboard</h2>
+          <p>Painel financeiro completo</p>
+        </Link>
+        
+        <Link to="/database" className="card">
+          <div className="card-icon">🗄️</div>
+          <h2>Database</h2>
+          <p>Consulte o banco de dados</p>
+        </Link>
+        
+        <Link to="/crud-transactions" className="card">
+          <div className="card-icon">⚙️</div>
+          <h2>Manage Transactions</h2>
+          <p>Cadastre e edite transações</p>
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+export default Menu;
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\components\Navbar.js =====
+import React from 'react';
+
+const Navbar = () => {
+    return (
+        <nav style={styles.navbar}>
+            <ul style={styles.navList}>
+                <li style={styles.navItem}><a href="/" style={styles.navLink}>Dashboard</a></li>
+                <li style={styles.navItem}><a href="/transactions" style={styles.navLink}>Transações</a></li>
+                <li style={styles.navItem}><a href="/settings" style={styles.navLink}>Configurações</a></li>
+            </ul>
+        </nav>
+    );
+};
+
+const styles = {
+    navbar: {
+        backgroundColor: '#333',
+        padding: '10px 20px',
+    },
+    navList: {
+        listStyle: 'none',
+        display: 'flex',
+        justifyContent: 'space-around',
+        margin: 0,
+        padding: 0,
+    },
+    navItem: {
+        fontSize: '18px',
+    },
+    navLink: {
+        color: '#fff',
+        textDecoration: 'none',
+        padding: '8px 16px',
+        borderRadius: '4px',
+        transition: 'background-color 0.3s',
+    },
+    navLinkHover: {
+        backgroundColor: '#555',
+    },
+};
+
+export default Navbar;
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\components\Statistics.js =====
+import React, { useEffect, useState } from 'react';
+import api from '../api';
+import './Statistics.css';
+
+const Statistics = () => {
+    const [statistics, setStatistics] = useState(null);
+
+    useEffect(() => {
+        const fetchStatistics = async () => {
+            try {
+                const response = await api.get('/dashboard/statistics');
+                setStatistics(response.data);
+            } catch (error) {
+                console.error('Erro ao buscar estatísticas:', error);
+            }
+        };
+        fetchStatistics();
+    }, []);
+
+    if (!statistics) {
+        return <p>Loading statistics...</p>;
+    }
+
+    return (
+        <div className="statistics-container">
+            <h2>Financial Statistics</h2>
+            <div className="statistics-grid">
+                <div className="stat-item receita">
+                    <h3>Total Revenues</h3>
+                    <p>{statistics.totalReceitas ? `R$ ${statistics.totalReceitas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
+                </div>
+                <div className="stat-item despesa">
+                    <h3>Total Expenses</h3>
+                    <p>{statistics.totalDespesas ? `R$ ${statistics.totalDespesas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
+                </div>
+
+                <div className="stat-item receita">
+                    <h3>Monthly Average of Revenues</h3>
+                    <p>{statistics.mediaReceitasMensal ? `R$ ${statistics.mediaReceitasMensal.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
+                </div>
+                <div className="stat-item despesa">
+                    <h3>Monthly Average of Expenses</h3>
+                    <p>{statistics.mediaDespesasMensal ? `R$ ${statistics.mediaDespesasMensal.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
+                </div>
+
+                <div className="stat-item receita">
+                    <h3>Median of Revenues</h3>
+                    <p>{statistics.medianaReceitas ? `R$ ${statistics.medianaReceitas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
+                </div>
+                <div className="stat-item despesa">
+                    <h3>Median of Expenses</h3>
+                    <p>{statistics.medianaDespesas ? `R$ ${statistics.medianaDespesas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
+                </div>
+
+                <div className="stat-item receita">
+                    <h3>Mode of Revenues</h3>
+                    <p>{statistics.modaReceitas ? `R$ ${statistics.modaReceitas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
+                </div>
+                <div className="stat-item despesa">
+                    <h3>Mode of Expenses</h3>
+                    <p>{statistics.modaDespesas ? `R$ ${statistics.modaDespesas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
+                </div>
+
+                <div className="stat-item receita">
+                    <h3>Standard Deviation of Revenues</h3>
+                    <p>{statistics.desvioPadraoReceitas ? `R$ ${statistics.desvioPadraoReceitas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
+                </div>
+                <div className="stat-item despesa">
+                    <h3>Standard Deviation of Expenses</h3>
+                    <p>{statistics.desvioPadraoDespesas ? `R$ ${statistics.desvioPadraoDespesas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
+                </div>
+            </div>
+
+            <div className="back-to-menu">
+                <a href="/">
+                    <button className="back-button">Back to Menu</button>
+                </a>
+            </div>
+        </div>
+    );
+};
+
+export default Statistics;
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\components\Transactions.js =====
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../api';
+import './Transactions.css';
+
+const Transactions = () => {
+    const [transactions, setTransactions] = useState([]);
+
+    useEffect(() => {
+        const fetchTransactions = async () => {
+            try {
+                const response = await api.get('/transactions');
+                setTransactions(response.data);
+            } catch (error) {
+                console.error('Erro ao buscar transações:', error);
+            }
+        };
+        fetchTransactions();
+    }, []);
+
+    return (
+        <div className="transactions">
+            <h2>Lista de Transações</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {transactions.map((transaction) => (
+                        <tr key={transaction.id}>
+                            <td>{transaction.id}</td>
+                            <td>{transaction.description}</td>
+                            <td>R$ {transaction.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                            <td>{transaction.date}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+            <div className="back-to-menu">
+                <Link to="/">
+                    <button className="back-button">← Voltar ao Menu</button>
+                </Link>
+            </div>
+        </div>
+    );
+};
+
+export default Transactions;
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\api.js =====
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:8081/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+export default api;
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\App.js =====
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Menu from './components/Menu';
+import Transactions from './components/Transactions';
+import Statistics from './components/Statistics';
+import Dashboard from './components/Dashboard';
+import Database from './components/Database';
+import CRUDTransactions from './components/CRUDTransactions';
+
+function App() {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Menu />} />
+                <Route path="/transactions" element={<Transactions />} />
+                <Route path="/statistics" element={<Statistics />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/database" element={<Database />} />
+                <Route path="/crud-transactions" element={<CRUDTransactions />} />
+            </Routes>
+        </Router>
+    );
+}
+
+export default App;
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\index.js =====
+import React from 'react';
+import ReactDOM from 'react-dom/client'; // Note a mudança aqui
+import './index.css';
+import App from './App'; // Certifique-se de que o componente App está correto
+
+// Atualize para React 18
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+===== C:\Users\Nemo\Desktop\erp-system\nemiapiingfinancial\src\routes.js =====
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Transactions from './components/Transactions';
+import Dashboard from './components/Dashboard';
+import Statistics from './components/Statistics'; // Adicionado aqui também
+
+const AppRoutes = () => {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/transactions" element={<Transactions />} />
+                <Route path="/statistics" element={<Statistics />} /> {/* Certifique-se de incluir Statistics */}
+                <Route path="/dashboard" element={<Dashboard />} />
+            </Routes>
+        </Router>
+    );
+};
+
+export default AppRoutes;

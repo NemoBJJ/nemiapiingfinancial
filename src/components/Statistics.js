@@ -18,13 +18,12 @@ const Statistics = () => {
     }, []);
 
     if (!statistics) {
-        return <p>Loading statistics...</p>; // Mensagem de carregamento
+        return <p>Loading statistics...</p>;
     }
 
-    // Garantir que statistics tenha valores válidos antes de acessar
     return (
         <div className="statistics-container">
-            <h2>Financial Statistics</h2> {/* Titulo em inglês */}
+            <h2>Financial Statistics</h2>
             <div className="statistics-grid">
                 <div className="stat-item receita">
                     <h3>Total Revenues</h3>
@@ -35,7 +34,6 @@ const Statistics = () => {
                     <p>{statistics.totalDespesas ? `R$ ${statistics.totalDespesas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
                 </div>
 
-                {/* Médias Mensais */}
                 <div className="stat-item receita">
                     <h3>Monthly Average of Revenues</h3>
                     <p>{statistics.mediaReceitasMensal ? `R$ ${statistics.mediaReceitasMensal.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
@@ -45,7 +43,6 @@ const Statistics = () => {
                     <p>{statistics.mediaDespesasMensal ? `R$ ${statistics.mediaDespesasMensal.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
                 </div>
 
-                {/* Mediana */}
                 <div className="stat-item receita">
                     <h3>Median of Revenues</h3>
                     <p>{statistics.medianaReceitas ? `R$ ${statistics.medianaReceitas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
@@ -55,7 +52,6 @@ const Statistics = () => {
                     <p>{statistics.medianaDespesas ? `R$ ${statistics.medianaDespesas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
                 </div>
 
-                {/* Moda */}
                 <div className="stat-item receita">
                     <h3>Mode of Revenues</h3>
                     <p>{statistics.modaReceitas ? `R$ ${statistics.modaReceitas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
@@ -65,7 +61,6 @@ const Statistics = () => {
                     <p>{statistics.modaDespesas ? `R$ ${statistics.modaDespesas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
                 </div>
 
-                {/* Desvio Padrão */}
                 <div className="stat-item receita">
                     <h3>Standard Deviation of Revenues</h3>
                     <p>{statistics.desvioPadraoReceitas ? `R$ ${statistics.desvioPadraoReceitas.toLocaleString('en-US', { minimumFractionDigits: 2 })}` : 'N/A'}</p>
@@ -76,10 +71,9 @@ const Statistics = () => {
                 </div>
             </div>
 
-            {/* Botão de Voltar */}
             <div className="back-to-menu">
                 <a href="/">
-                    <button className="back-button">Back to Menu</button> {/* Botão em inglês */}
+                    <button className="back-button">Back to Menu</button>
                 </a>
             </div>
         </div>

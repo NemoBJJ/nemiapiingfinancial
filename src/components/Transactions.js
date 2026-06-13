@@ -9,7 +9,7 @@ const Transactions = () => {
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
-                const response = await api.get('/transactions'); // Rota sem paginação
+                const response = await api.get('/transactions');
                 setTransactions(response.data);
             } catch (error) {
                 console.error('Erro ao buscar transações:', error);
@@ -20,14 +20,14 @@ const Transactions = () => {
 
     return (
         <div className="transactions">
-            <h2>Transactions List</h2>
+            <h2>Lista de Transações</h2>
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Description</th>
-                        <th>Amount</th>
-                        <th>Date</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Data</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,7 +35,7 @@ const Transactions = () => {
                         <tr key={transaction.id}>
                             <td>{transaction.id}</td>
                             <td>{transaction.description}</td>
-                            <td>${transaction.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                            <td>R$ {transaction.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
                             <td>{transaction.date}</td>
                         </tr>
                     ))}
@@ -43,7 +43,7 @@ const Transactions = () => {
             </table>
             <div className="back-to-menu">
                 <Link to="/">
-                    <button className="back-button">Back to Menu</button>
+                    <button className="back-button">← Voltar ao Menu</button>
                 </Link>
             </div>
         </div>
