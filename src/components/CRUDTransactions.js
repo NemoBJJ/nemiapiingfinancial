@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
+import {
+    ArrowLeft,
+    Settings,
+    Plus,
+    Search,
+    List,
+    Coins,
+    ArrowDownCircle,
+    Trash2,
+    RefreshCw
+} from 'lucide-react';
 
 const CRUDTransactions = () => {
     const [transactions, setTransactions] = useState([]);
@@ -122,15 +133,21 @@ const CRUDTransactions = () => {
         <div className="crud-container">
             <div className="crud-header">
                 <Link to="/">
-                    <button className="back-button-crud">← Voltar ao Menu</button>
+                    <button className="back-button-crud">
+                        <ArrowLeft size={18} className="icon-back" />
+                        Voltar ao Menu
+                    </button>
                 </Link>
-                <h1>⚙️ Gerenciar Transações</h1>
+                <h1>
+                    <Settings size={28} className="icon-header" />
+                    Gerenciar Transações
+                </h1>
             </div>
 
             <div className="crud-grid">
                 {/* Formulário */}
                 <div className="crud-card form-card">
-                    <h3>📝 Adicionar / Atualizar</h3>
+                    <h3>Adicionar / Atualizar</h3>
                     <div className="form-group">
                         <input
                             type="text"
@@ -154,8 +171,8 @@ const CRUDTransactions = () => {
                             onChange={(e) => setNewTransaction({ ...newTransaction, type: e.target.value })}
                         >
                             <option value="">Selecione o Tipo *</option>
-                            <option value="REVENUE">💰 Receita</option>
-                            <option value="EXPENSE">💸 Despesa</option>
+                            <option value="REVENUE">Receita</option>
+                            <option value="EXPENSE">Despesa</option>
                         </select>
                         <input
                             type="text"
@@ -166,15 +183,21 @@ const CRUDTransactions = () => {
                             }
                         />
                         <div className="form-buttons">
-                            <button className="btn-add" onClick={handleAddTransaction}>Adicionar</button>
-                            <button className="btn-update" onClick={handleUpdateTransaction}>Atualizar</button>
+                            <button className="btn-add" onClick={handleAddTransaction}>
+                                <Plus size={16} className="btn-icon" />
+                                Adicionar
+                            </button>
+                            <button className="btn-update" onClick={handleUpdateTransaction}>
+                                <RefreshCw size={16} className="btn-icon" />
+                                Atualizar
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Busca por ID */}
                 <div className="crud-card search-card">
-                    <h3>🔍 Buscar por ID</h3>
+                    <h3>Buscar por ID</h3>
                     <div className="form-group">
                         <input
                             type="text"
@@ -182,14 +205,17 @@ const CRUDTransactions = () => {
                             value={selectedTransactionId}
                             onChange={(e) => setSelectedTransactionId(e.target.value)}
                         />
-                        <button className="btn-search" onClick={handleFetchTransactionById}>Buscar</button>
+                        <button className="btn-search" onClick={handleFetchTransactionById}>
+                            <Search size={16} className="btn-icon" />
+                            Buscar
+                        </button>
                         <button className="btn-clear" onClick={resetForm}>Limpar</button>
                     </div>
                 </div>
 
                 {/* Lista de transações */}
                 <div className="crud-card list-card">
-                    <h3>📋 Lista de Transações ({transactions.length})</h3>
+                    <h3>Lista de Transações ({transactions.length})</h3>
                     <div className="transactions-list">
                         {transactions.map((t) => (
                             <div key={t.id} className="transaction-item">
@@ -197,14 +223,20 @@ const CRUDTransactions = () => {
                                     <span className="transaction-id">#{t.id}</span>
                                     <span className="transaction-desc">{t.description || '-'}</span>
                                     <span className={`transaction-amount ${t.type === 'REVENUE' ? 'amount-revenue' : 'amount-expense'}`}>
-                                        {t.type === 'REVENUE' ? '💰' : '💸'} R$ {formatAmount(t.amount)}
+                                        {t.type === 'REVENUE' ? (
+                                            <Coins size={14} className="icon-revenue" />
+                                        ) : (
+                                            <ArrowDownCircle size={14} className="icon-expense" />
+                                        )}
+                                        R$ {formatAmount(t.amount)}
                                     </span>
                                     <span className="transaction-type-badge">
                                         {t.type === 'REVENUE' ? 'Receita' : 'Despesa'}
                                     </span>
                                 </div>
                                 <button className="btn-delete" onClick={() => handleDeleteTransaction(t.id)}>
-                                    🗑️ Excluir
+                                    <Trash2 size={16} className="btn-icon" />
+                                    Excluir
                                 </button>
                             </div>
                         ))}
@@ -232,6 +264,9 @@ const CRUDTransactions = () => {
                 }
 
                 .crud-header h1 {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
                     font-size: 2rem;
                     font-weight: bold;
                     background: linear-gradient(135deg, #fbbf24, #f59e0b);
@@ -240,7 +275,41 @@ const CRUDTransactions = () => {
                     color: transparent;
                 }
 
+                .icon-back {
+                    color: #f8fafc;
+                    stroke-width: 2;
+                    margin-right: 0.3rem;
+                    vertical-align: middle;
+                }
+
+                .icon-header {
+                    color: #fbbf24;
+                    stroke-width: 2;
+                }
+
+                .icon-revenue {
+                    color: #22c55e;
+                    stroke-width: 2;
+                    margin-right: 0.2rem;
+                    vertical-align: middle;
+                }
+
+                .icon-expense {
+                    color: #ef4444;
+                    stroke-width: 2;
+                    margin-right: 0.2rem;
+                    vertical-align: middle;
+                }
+
+                .btn-icon {
+                    stroke-width: 2;
+                    margin-right: 0.3rem;
+                    vertical-align: middle;
+                }
+
                 .back-button-crud {
+                    display: inline-flex;
+                    align-items: center;
                     padding: 0.5rem 1.25rem;
                     font-size: 0.875rem;
                     font-weight: 600;
@@ -324,6 +393,9 @@ const CRUDTransactions = () => {
                     border-radius: 0.75rem;
                     cursor: pointer;
                     transition: all 0.2s ease;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
                     flex: 1;
                 }
 
@@ -411,6 +483,9 @@ const CRUDTransactions = () => {
                 .transaction-amount {
                     font-weight: 600;
                     font-size: 0.875rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.2rem;
                 }
 
                 .amount-revenue {
@@ -430,6 +505,8 @@ const CRUDTransactions = () => {
                 }
 
                 .btn-delete {
+                    display: inline-flex;
+                    align-items: center;
                     padding: 0.5rem 1rem;
                     background: rgba(239, 68, 68, 0.2);
                     border: 1px solid rgba(239, 68, 68, 0.4);
