@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { TrendingUp, Database, Settings } from 'lucide-react';
 import './Menu.css';
 
 const Menu = () => {
@@ -16,7 +17,9 @@ const Menu = () => {
       <div className="financeiro-cards">
         {/* Dashboard */}
         <Link to="/dashboard" className="financeiro-card dashboard-card">
-          <div className="card-icon">📈</div>
+          <div className="card-icon">
+            <TrendingUp size={48} strokeWidth={2} />
+          </div>
           <h2>Dashboard</h2>
           <p>
             Visualização gráfica de receitas, despesas e indicadores.
@@ -26,7 +29,9 @@ const Menu = () => {
 
         {/* Banco de Dados */}
         <Link to="/database" className="financeiro-card banco-card">
-          <div className="card-icon">🗄️</div>
+          <div className="card-icon">
+            <Database size={48} strokeWidth={2} />
+          </div>
           <h2>Banco de Dados</h2>
           <p>
             Consulta completa das transações armazenadas (paginação).
@@ -39,7 +44,9 @@ const Menu = () => {
           to="/crud-transactions"
           className="financeiro-card gerenciar-card"
         >
-          <div className="card-icon">⚙️</div>
+          <div className="card-icon">
+            <Settings size={48} strokeWidth={2} />
+          </div>
           <h2>Gerenciar</h2>
           <p>
             Criar, editar, excluir e consultar transações individualmente.

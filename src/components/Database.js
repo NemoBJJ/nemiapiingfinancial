@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
+import { ArrowLeft, Database as DatabaseIcon, Coins, ArrowDownCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Database = () => {
     const [transactions, setTransactions] = useState([]);
@@ -51,9 +52,15 @@ const Database = () => {
         <div className="database-container">
             <div className="database-header">
                 <Link to="/">
-                    <button className="back-button-database">← Voltar ao Menu</button>
+                    <button className="back-button-database">
+                        <ArrowLeft size={18} className="icon-back" />
+                        Voltar ao Menu
+                    </button>
                 </Link>
-                <h1>🗄️ Banco de Dados</h1>
+                <h1>
+                    <DatabaseIcon size={28} className="icon-header" />
+                    Banco de Dados
+                </h1>
             </div>
 
             <div className="database-card">
@@ -76,7 +83,11 @@ const Database = () => {
                                     <td>{transaction.id}</td>
                                     <td>{transaction.description || '-'}</td>
                                     <td className="amount-cell">
-                                        {transaction.type === 'REVENUE' ? '💰 ' : '💸 '}
+                                        {transaction.type === 'REVENUE' ? (
+                                            <Coins size={16} className="icon-revenue" />
+                                        ) : (
+                                            <ArrowDownCircle size={16} className="icon-expense" />
+                                        )}
                                         R$ {formatAmount(transaction.amount)}
                                     </td>
                                     <td>{transaction.date || '-'}</td>
@@ -98,13 +109,15 @@ const Database = () => {
 
                 <div className="pagination-database">
                     <button onClick={handlePreviousPage} disabled={page === 0}>
-                        ◀ Anterior
+                        <ChevronLeft size={18} />
+                        Anterior
                     </button>
                     <span className="page-info">
                         Página {page + 1} de {totalPages}
                     </span>
                     <button onClick={handleNextPage} disabled={page === totalPages - 1}>
-                        Próxima ▶
+                        Próxima
+                        <ChevronRight size={18} />
                     </button>
                 </div>
             </div>
@@ -126,6 +139,9 @@ const Database = () => {
                 }
 
                 .database-header h1 {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
                     font-size: 2rem;
                     font-weight: bold;
                     background: linear-gradient(135deg, #fbbf24, #f59e0b);
@@ -134,7 +150,35 @@ const Database = () => {
                     color: transparent;
                 }
 
+                .icon-back {
+                    color: #f8fafc;
+                    stroke-width: 2;
+                    margin-right: 0.3rem;
+                    vertical-align: middle;
+                }
+
+                .icon-header {
+                    color: #fbbf24;
+                    stroke-width: 2;
+                }
+
+                .icon-revenue {
+                    color: #22c55e;
+                    stroke-width: 2;
+                    margin-right: 0.2rem;
+                    vertical-align: middle;
+                }
+
+                .icon-expense {
+                    color: #ef4444;
+                    stroke-width: 2;
+                    margin-right: 0.2rem;
+                    vertical-align: middle;
+                }
+
                 .back-button-database {
+                    display: inline-flex;
+                    align-items: center;
                     padding: 0.5rem 1.25rem;
                     font-size: 0.875rem;
                     font-weight: 600;
@@ -195,6 +239,9 @@ const Database = () => {
 
                 .amount-cell {
                     font-weight: 600;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.2rem;
                 }
 
                 .type-revenue {
@@ -224,6 +271,9 @@ const Database = () => {
                 }
 
                 .pagination-database button {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.3rem;
                     padding: 0.5rem 1rem;
                     font-size: 0.875rem;
                     font-weight: 600;

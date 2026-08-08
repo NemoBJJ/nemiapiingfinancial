@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
 import './Transactions.css';
+import { ArrowLeft } from 'lucide-react';
 
 const Transactions = () => {
     const [transactions, setTransactions] = useState([]);
@@ -43,7 +44,10 @@ const Transactions = () => {
             </table>
             <div className="back-to-menu">
                 <Link to="/">
-                    <button className="back-button">← Voltar ao Menu</button>
+                    <button className="back-button">
+                        <ArrowLeft size={18} className="icon-back" />
+                        Voltar ao Menu
+                    </button>
                 </Link>
             </div>
         </div>
