@@ -11,6 +11,16 @@ import {
     ArcElement,
 } from 'chart.js';
 import { Bar, Doughnut } from 'react-chartjs-2';
+import {
+    ArrowLeft,
+    Coins,
+    ArrowDownCircle,
+    Scale,
+    BarChart3,
+    TrendingUp,
+    PieChart,
+    List,
+} from 'lucide-react';
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend, ArcElement);
 
@@ -214,7 +224,10 @@ const Dashboard = () => {
         <div className="dashboard-container">
             <div className="dashboard-header">
                 <Link to="/">
-                    <button className="back-button-dashboard">← Voltar ao Menu</button>
+                    <button className="back-button-dashboard">
+                        <ArrowLeft size={18} className="icon-back" />
+                        Voltar ao Menu
+                    </button>
                 </Link>
                 <h1>Financeiro</h1>
             </div>
@@ -222,7 +235,9 @@ const Dashboard = () => {
             {/* Cards de métricas */}
             <div className="metrics-grid">
                 <div className="metric-card revenue-card">
-                    <div className="metric-icon">💰</div>
+                    <div className="metric-icon">
+                        <Coins size={32} className="icon-metric" />
+                    </div>
                     <div className="metric-info">
                         <span className="metric-label">Total Receitas</span>
                         <span className="metric-value">{formatCurrency(stats.totalReceitas)}</span>
@@ -230,7 +245,9 @@ const Dashboard = () => {
                 </div>
 
                 <div className="metric-card expense-card">
-                    <div className="metric-icon">💸</div>
+                    <div className="metric-icon">
+                        <ArrowDownCircle size={32} className="icon-metric" />
+                    </div>
                     <div className="metric-info">
                         <span className="metric-label">Total Despesas</span>
                         <span className="metric-value">{formatCurrency(stats.totalDespesas)}</span>
@@ -238,7 +255,9 @@ const Dashboard = () => {
                 </div>
 
                 <div className={`metric-card balance-card ${stats.saldo >= 0 ? 'positive' : 'negative'}`}>
-                    <div className="metric-icon">⚖️</div>
+                    <div className="metric-icon">
+                        <Scale size={32} className="icon-metric" />
+                    </div>
                     <div className="metric-info">
                         <span className="metric-label">Saldo Total</span>
                         <span className="metric-value">{formatCurrency(stats.saldo)}</span>
@@ -246,7 +265,9 @@ const Dashboard = () => {
                 </div>
 
                 <div className="metric-card transactions-card">
-                    <div className="metric-icon">📊</div>
+                    <div className="metric-icon">
+                        <BarChart3 size={32} className="icon-metric" />
+                    </div>
                     <div className="metric-info">
                         <span className="metric-label">Total Transações</span>
                         <span className="metric-value">{stats.totalTransacoes}</span>
@@ -257,7 +278,10 @@ const Dashboard = () => {
             {/* Gráficos */}
             <div className="charts-row">
                 <div className="chart-card bar-chart">
-                    <h3>📈 Evolução Mensal</h3>
+                    <h3>
+                        <TrendingUp size={20} className="icon-title" />
+                        Evolução Mensal
+                    </h3>
                     <div className="chart-wrapper">
                         {monthlyData.labels.length > 0 ? (
                             <Bar data={barChartData} options={barOptions} />
@@ -268,7 +292,10 @@ const Dashboard = () => {
                 </div>
 
                 <div className="chart-card donut-chart">
-                    <h3>🥧 Proporção Receitas x Despesas</h3>
+                    <h3>
+                        <PieChart size={20} className="icon-title" />
+                        Proporção Receitas x Despesas
+                    </h3>
                     <div className="donut-wrapper">
                         {(stats.totalReceitas > 0 || stats.totalDespesas > 0) ? (
                             <Doughnut data={donutData} options={donutOptions} />
@@ -281,7 +308,10 @@ const Dashboard = () => {
 
             {/* Tabela de últimas transações */}
             <div className="recent-transactions">
-                <h3>📋 Últimas Transações</h3>
+                <h3>
+                    <List size={20} className="icon-title" />
+                    Últimas Transações
+                </h3>
                 <div className="table-wrapper">
                     <table>
                         <thead>
@@ -337,6 +367,8 @@ const Dashboard = () => {
                     color: transparent;
                 }
                 .back-button-dashboard {
+                    display: inline-flex;
+                    align-items: center;
                     padding: 0.5rem 1.25rem;
                     font-size: 0.875rem;
                     font-weight: 600;
@@ -351,6 +383,21 @@ const Dashboard = () => {
                     background: rgba(255, 193, 7, 0.2);
                     border-color: #fbbf24;
                     transform: translateX(-4px);
+                }
+                .icon-back {
+                    color: #f8fafc;
+                    stroke-width: 2;
+                    margin-right: 0.3rem;
+                    vertical-align: middle;
+                }
+                .icon-metric {
+                    stroke-width: 2;
+                }
+                .icon-title {
+                    color: #fbbf24;
+                    stroke-width: 2;
+                    margin-right: 0.4rem;
+                    vertical-align: middle;
                 }
                 .metrics-grid {
                     display: grid;
@@ -373,7 +420,20 @@ const Dashboard = () => {
                     transform: translateY(-4px);
                     border-color: rgba(255, 193, 7, 0.5);
                 }
-                .metric-icon { font-size: 2.5rem; }
+                .metric-icon {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 3.5rem;
+                    height: 3.5rem;
+                    border-radius: 50%;
+                    background: rgba(255, 193, 7, 0.1);
+                }
+                .revenue-card .metric-icon { color: #22c55e; }
+                .expense-card .metric-icon { color: #ef4444; }
+                .balance-card.positive .metric-icon { color: #22c55e; }
+                .balance-card.negative .metric-icon { color: #ef4444; }
+                .transactions-card .metric-icon { color: #fbbf24; }
                 .metric-info { display: flex; flex-direction: column; }
                 .metric-label { font-size: 0.875rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
                 .metric-value { font-size: 1.75rem; font-weight: bold; color: #f8fafc; }
@@ -395,7 +455,13 @@ const Dashboard = () => {
                     padding: 1.5rem;
                     border: 1px solid rgba(255, 193, 7, 0.2);
                 }
-                .chart-card h3 { color: #f8fafc; font-size: 1.125rem; margin-bottom: 1rem; }
+                .chart-card h3 {
+                    display: flex;
+                    align-items: center;
+                    color: #f8fafc;
+                    font-size: 1.125rem;
+                    margin-bottom: 1rem;
+                }
                 .chart-wrapper { height: 320px; }
                 .donut-wrapper { height: 280px; display: flex; justify-content: center; align-items: center; }
                 .no-data-message {
@@ -413,7 +479,13 @@ const Dashboard = () => {
                     padding: 1.5rem;
                     border: 1px solid rgba(255, 193, 7, 0.2);
                 }
-                .recent-transactions h3 { color: #f8fafc; font-size: 1.125rem; margin-bottom: 1rem; }
+                .recent-transactions h3 {
+                    display: flex;
+                    align-items: center;
+                    color: #f8fafc;
+                    font-size: 1.125rem;
+                    margin-bottom: 1rem;
+                }
                 .table-wrapper { overflow-x: auto; }
                 table { width: 100%; border-collapse: collapse; }
                 th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid rgba(148, 163, 184, 0.2); }
